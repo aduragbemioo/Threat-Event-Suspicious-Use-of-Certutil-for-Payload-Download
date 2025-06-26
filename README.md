@@ -1,6 +1,8 @@
 # Threat Event: Payload Delivery and Persistence via PowerShell
 Simulated Malware Delivery Using PowerShell and Scheduled Task Creation for Persistence
-- [Scenario Creation](hhttps://github.com/aduragbemioo/Threat-Event-Suspicious-Use-of-Certutil-for-Payload-Download/blob/main/scenario.md)
+![image](https://github.com/user-attachments/assets/1418877f-944b-43d6-ae0a-27de454b23d0)
+
+- [Scenario Creation](https://github.com/aduragbemioo/Threat-Event-Suspicious-Use-of-Certutil-for-Payload-Download/blob/main/scenario.md)
 
 
 🛠️ Platforms and Tools Used
@@ -22,6 +24,7 @@ DeviceProcessEvents
 | where ProcessCommandLine has_any ("Invoke-WebRequest", "-OutFile", "EncodedCommand")
 | project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
 ```
+![image](https://github.com/user-attachments/assets/0208f06b-9b72-432f-94b0-35145aa6cc9a)
 
 - Multiple suspicious PowerShell commands using Invoke-WebRequest and -OutFile were detected.
 - This indicates likely attempts to download and write payloads using allowed LOLBins.
@@ -34,6 +37,8 @@ DeviceFileEvents
 | where FileName endswith ".exe"
 | project Timestamp, DeviceName, FileName, FolderPath, ActionType, InitiatingProcessCommandLine
 ```
+![image](https://github.com/user-attachments/assets/87ac2ef5-a8bc-48b9-a977-3ea00e91967b)
+
 - Simulated payload, payload.exe, was discovered in C:\Users\Public.
 - This directory is commonly abused for shared access or loose permission settings.
 
@@ -46,6 +51,8 @@ DeviceProcessEvents
 | project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessCommandLine
 
 ```
+![image](https://github.com/user-attachments/assets/d19a5e93-ad6a-4046-886a-dabbbabadb0d)
+
 - No record of execution found, this is expected since the payload was non-functional (fake).
 - In a real-world attack, execution would trigger Defender and generate logs.
 
@@ -59,19 +66,21 @@ DeviceProcessEvents
 | project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine
 
 ```
+![image](https://github.com/user-attachments/assets/9f0816d8-bf6a-48c5-897c-774e8395863c)
+
 - Detected creation of a scheduled task using schtasks /create
 - Scheduled tasks are a common persistence technique and are often abused in malware deployment
   
 ### Chronological Event Timeline
 ### 1. Suspicious File Drop
-- **Timestamp:** See DeviceFileEvents log from PowerShell download
+- **Timestamp:** 2025-06-26T15:48:02.698591Z
 - **Event:** Dropped payload.exe into the C:\Users\Public directory using Invoke-WebRequest.
-- **Path:** C:\Users\Public\fakepayload.exe
+- **Path:** C:\Users\Public\payload.exe
 
 ### 2. Scheduled Task Persistence Established
-- **Timestamp:** Timestamp from scheduled task creation event
+- **Timestamp:** 2025-06-26T15:49:02.9084213Z
 - **Event:** Scheduled task created via PowerShell using schtasks /create.
-- **Command Line:** schtasks /create /tn "Updater" /tr "C:\Users\Public\fakepayload.exe" /sc onlogon
+- **Command Line:** "schtasks.exe" /create /tn SimulatedPayloadTask /tr C:\Users\Public\payload.exe /sc minute /mo 30 /f
 
 ### 3. Attempted Execution of Payload
 - **Timestamp:** Not recorded (fake executable not run)
