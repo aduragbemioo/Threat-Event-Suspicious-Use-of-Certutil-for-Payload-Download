@@ -112,6 +112,8 @@ Prioritize endpoints with public folder .exe executions followed by outbound tra
 ---
 💻 Simulation Script (Safe)
 ```Powershell
+# Define the entire PowerShell logic as a script block
+$scriptBlock = @'
 # Create a simulated payload URL and destination path
 $payloadUrl = "https://hel1-speed.hetzner.com/100MB.bin"
 $payloadPath = "$env:PUBLIC\payload.exe"
@@ -144,6 +146,13 @@ schtasks /delete /tn $taskName /f
 Remove-Item $payloadPath -Force
 
 Write-Host "[+] Simulation completed."
+'@
+
+# Encode the script block for execution
+$encodedScript = [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($scriptBlock))
+
+# Launch powershell.exe with the encoded command
+Start-Process powershell.exe -ArgumentList "-EncodedCommand $encodedScript" -Wait
 
 
 ```
