@@ -1,4 +1,4 @@
-# Threat Event: Payload Delivery and Persistence via PowerShell
+# Threat Event: Payload Delivery and Persistence using certutil.exe
 Simulated Malware Delivery Using PowerShell and Scheduled Task Creation for Persistence
 ![image](https://github.com/user-attachments/assets/1418877f-944b-43d6-ae0a-27de454b23d0)
 
